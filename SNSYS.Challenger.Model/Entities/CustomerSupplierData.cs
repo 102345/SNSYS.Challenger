@@ -9,7 +9,7 @@
         public string Address { get; set; }
         public string City { get; set; }
         public string Country { get; set; }
-        public int ZIP { get; set; }
+        public string ZIP { get; set; }
         public string ContactName { get; set; }
         public string ContactEmail { get; set; }
         public int? ContactPhoneNumber { get; set; }

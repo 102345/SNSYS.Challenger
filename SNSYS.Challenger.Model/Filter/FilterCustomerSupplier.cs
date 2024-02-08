@@ -1,6 +1,6 @@
 ﻿namespace SNSYS.Challenger.Domain.Filter
 {
-    public class FilterCustomerSupplier
+    public class FilterCustomerSupplier : Paginated
     {
         public string? name { get; set; }
 

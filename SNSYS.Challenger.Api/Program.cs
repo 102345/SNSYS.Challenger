@@ -1,6 +1,9 @@
 
+using FluentValidation.AspNetCore;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SNSYS.Challenger.Domain.Repositories.CustomerSupplierRepository;
@@ -13,8 +16,9 @@ using SNSYS.Challenger.InfraStructure.Data.Context;
 using SNSYS.Challenger.InfraStructure.Interfaces;
 using SNSYS.Challenger.InfraStructure.Repositories.CustomerSupplierRepository;
 using SNSYS.Challenger.InfraStructure.Repositories.User;
-using System.Configuration;
 using System.Text;
+using SNSYS.Challenger.Api.Contracts;
+using SNSYS.Challenger.Api.Validators;
 
 namespace SNSYS.Challenger.Api
 {
@@ -32,15 +36,10 @@ namespace SNSYS.Challenger.Api
                                  .AddJsonFile($"appsettings.{environmentName}.json", optional: true)
                                  .Build();
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddFluentValidation();
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
-            //builder.Services.AddEntityFrameworkNpgsql()
-            //            .AddDbContext<ChallengerSNSYSDbContext>(options =>
-            //                        options.UseNpgsql(configuration.GetConnectionString("ChallengerDb"))     
-            //            );
 
             builder.Services.AddDbContext<ChallengerSNSYSDbContext>(options =>
                              options.UseNpgsql(configuration.GetConnectionString("ChallengerDb")));
@@ -77,6 +76,10 @@ namespace SNSYS.Challenger.Api
 
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            builder.Services.AddFluentValidationAutoValidation();
+            builder.Services.AddFluentValidationClientsideAdapters();
+            builder.Services.AddScoped<IValidator<CustomerSupplierRequest>, CustomerSupplierValidator>();
 
             var app = builder.Build();
 

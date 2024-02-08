@@ -3,11 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SNSYS.Challenger.Api", "SNSYS.Challenger.Api\SNSYS.Challenger.Api.csproj", "{DCF7C21F-C620-46A7-87E4-8F435A030C6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SNSYS.Challenger.Api", "SNSYS.Challenger.Api\SNSYS.Challenger.Api.csproj", "{DCF7C21F-C620-46A7-87E4-8F435A030C6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SNSYS.Challenger.InfraStructure", "SNSYS.Challenger.InfraStructure\SNSYS.Challenger.InfraStructure.csproj", "{6B70027C-42DE-40A4-9057-C2E1FB6C9049}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SNSYS.Challenger.InfraStructure", "SNSYS.Challenger.InfraStructure\SNSYS.Challenger.InfraStructure.csproj", "{6B70027C-42DE-40A4-9057-C2E1FB6C9049}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SNSYS.Challenger.Domain", "SNSYS.Challenger.Model\SNSYS.Challenger.Domain.csproj", "{4F06EF12-FAFD-40DB-A7BE-6BCDF16757C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SNSYS.Challenger.Domain", "SNSYS.Challenger.Model\SNSYS.Challenger.Domain.csproj", "{4F06EF12-FAFD-40DB-A7BE-6BCDF16757C5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{9A122812-42D1-4CDE-A677-6BD3AE41B399}"
+	ProjectSection(SolutionItems) = preProject
+		C:\Users\marci\OneDrive\Área de Trabalho\Create_Database_SNSYS.sql = C:\Users\marci\OneDrive\Área de Trabalho\Create_Database_SNSYS.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

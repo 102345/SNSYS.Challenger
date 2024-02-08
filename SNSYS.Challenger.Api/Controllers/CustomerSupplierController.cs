@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SNSYS.Challenger.Api.Contracts;
+using SNSYS.Challenger.Api.Validators;
 using SNSYS.Challenger.Domain.Entities;
 using SNSYS.Challenger.Domain.Filter;
 using SNSYS.Challenger.Domain.Services.Interfaces;
-using System.Collections.Generic;
 
 namespace SNSYS.Challenger.Api.Controllers
 {
@@ -23,10 +22,10 @@ namespace SNSYS.Challenger.Api.Controllers
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] FilterCustomerSupplierRequest filterCustomerSupplierRequest)
         {
+            
             var filterCustomerSupplierMap = _mapper.Map<FilterCustomerSupplierRequest,FilterCustomerSupplier>(filterCustomerSupplierRequest);
 
             var customerSupplierList = await _customerSupplierService.GetAllAsync(filterCustomerSupplierMap);
@@ -46,7 +45,18 @@ namespace SNSYS.Challenger.Api.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CustomerSupplierRequest customerSupplierRequest)
-        {   
+        {
+
+            var validator = new CustomerSupplierValidator();
+            var validationResult = validator.Validate(customerSupplierRequest);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
+
+
+
             var customerSupplier = _mapper.Map<CustomerSupplierRequest, CustomerSupplier>(customerSupplierRequest);
 
             var ret = _customerSupplierService.CreateAsync(customerSupplier);

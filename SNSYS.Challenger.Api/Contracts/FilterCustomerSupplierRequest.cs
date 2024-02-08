@@ -1,6 +1,6 @@
 ﻿namespace SNSYS.Challenger.Api.Contracts
 {
-    public class FilterCustomerSupplierRequest
+    public class FilterCustomerSupplierRequest : PaginatedRequest
     {
         public string? name { get; set; }
 

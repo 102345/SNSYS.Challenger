@@ -22,9 +22,17 @@ namespace SNSYS.Challenger.InfraStructure.Repositories.CustomerSupplierRepositor
 
         public async Task CreateAsync(CustomerSupplier customerSupplier)
         {
-
-            _context.CustomerSupplier.Add(customerSupplier);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.CustomerSupplier.Add(customerSupplier);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message;
+             
+            }
+            
 
         }
 
@@ -60,7 +68,7 @@ namespace SNSYS.Challenger.InfraStructure.Repositories.CustomerSupplierRepositor
                             DocumentNumber = cs.DocumentNumber,
                             Address = csa.Address == null ? string.Empty : csa.Address,
                             City = csa.City == null ? string.Empty : csa.City,
-                            ZIP = csa.ZIP == null ? 0 : csa.ZIP,
+                            ZIP = csa.ZIP == null ? string.Empty : csa.ZIP,
                             Country = csa.Country == null ? string.Empty : csa.Country,
                             ContactName = csc.Name == null ? string.Empty : csc.Name,
                             ContactEmail = csc.Email == null ? string.Empty : csc.Email,
@@ -111,6 +119,7 @@ namespace SNSYS.Challenger.InfraStructure.Repositories.CustomerSupplierRepositor
                 query = query.Where(csc => EF.Functions.Like(csc.ContactPosition, contactPosition));
             }
 
+            query = query.Skip((filterCustomerSupplier.pageIndex - 1) * filterCustomerSupplier.pageSize).Take(filterCustomerSupplier.pageSize);
 
             return await query.ToListAsync();
         }
