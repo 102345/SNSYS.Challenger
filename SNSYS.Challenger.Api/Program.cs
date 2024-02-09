@@ -1,9 +1,7 @@
 
 using FluentValidation.AspNetCore;
-using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SNSYS.Challenger.Domain.Repositories.CustomerSupplierRepository;
@@ -17,8 +15,9 @@ using SNSYS.Challenger.InfraStructure.Interfaces;
 using SNSYS.Challenger.InfraStructure.Repositories.CustomerSupplierRepository;
 using SNSYS.Challenger.InfraStructure.Repositories.User;
 using System.Text;
-using SNSYS.Challenger.Api.Contracts;
+using System.Globalization;
 using SNSYS.Challenger.Api.Validators;
+using Microsoft.OpenApi.Models;
 
 namespace SNSYS.Challenger.Api
 {
@@ -27,6 +26,7 @@ namespace SNSYS.Challenger.Api
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
             var environmentName = Environment.GetEnvironmentVariable("CONSOLENETCORE_ENVIRONMENT");
 
@@ -36,10 +36,44 @@ namespace SNSYS.Challenger.Api
                                  .AddJsonFile($"appsettings.{environmentName}.json", optional: true)
                                  .Build();
 
-            builder.Services.AddControllers().AddFluentValidation();
+            builder.Services.AddControllers();
 
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+
+            //builder.Services.AddSwaggerGen();
+
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "APIContagem", Version = "v1" });
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description =
+                        "JWT Authorization Header - utilizado com Bearer Authentication.\r\n\r\n" +
+                        "Digite 'Bearer' [espaço] e então seu token no campo abaixo.\r\n\r\n" +
+                        "Exemplo (informar sem as aspas): 'Bearer 12345abcdef'",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
+            });
 
             builder.Services.AddDbContext<ChallengerSNSYSDbContext>(options =>
                              options.UseNpgsql(configuration.GetConnectionString("ChallengerDb")));
@@ -63,9 +97,6 @@ namespace SNSYS.Challenger.Api
                });
 
 
-            // Ativa o uso do token como forma de autorizar o acesso
-            // a recursos deste projeto
-
             builder.Services.AddAuthorization(auth =>
             {
                 auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
@@ -74,12 +105,14 @@ namespace SNSYS.Challenger.Api
             });
 
 
-
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            builder.Services.AddFluentValidationAutoValidation();
-            builder.Services.AddFluentValidationClientsideAdapters();
-            builder.Services.AddScoped<IValidator<CustomerSupplierRequest>, CustomerSupplierValidator>();
+            builder.Services.AddFluentValidation(conf =>
+            {
+                conf.RegisterValidatorsFromAssemblyContaining(typeof(CustomerSupplierValidator));
+                conf.AutomaticValidationEnabled = false;
+                conf.ValidatorOptions.LanguageManager.Culture = new CultureInfo("en-US");
+            });
 
             var app = builder.Build();
 
@@ -92,6 +125,7 @@ namespace SNSYS.Challenger.Api
             app.UseAuthentication();
             app.UseAuthorization();
 
+            //app.UseRouting();
 
             app.MapControllers();
 

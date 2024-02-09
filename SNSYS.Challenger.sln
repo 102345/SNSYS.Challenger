@@ -11,7 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SNSYS.Challenger.Domain", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{9A122812-42D1-4CDE-A677-6BD3AE41B399}"
 	ProjectSection(SolutionItems) = preProject
-		C:\Users\marci\OneDrive\Área de Trabalho\Create_Database_SNSYS.sql = C:\Users\marci\OneDrive\Área de Trabalho\Create_Database_SNSYS.sql
+		Create_Database_SNSYS.sql = Create_Database_SNSYS.sql
+		Create_Tables_SNSYS.sql = Create_Tables_SNSYS.sql
 	EndProjectSection
 EndProject
 Global

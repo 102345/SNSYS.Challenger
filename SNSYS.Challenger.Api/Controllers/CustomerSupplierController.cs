@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
+using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SNSYS.Challenger.Api.Contracts;
-using SNSYS.Challenger.Api.Validators;
 using SNSYS.Challenger.Domain.Entities;
 using SNSYS.Challenger.Domain.Filter;
 using SNSYS.Challenger.Domain.Services.Interfaces;
@@ -10,16 +11,18 @@ namespace SNSYS.Challenger.Api.Controllers
 {
     [ApiController]
     [Route("snsys/api/customersupplier")]
-    //[Authorize("Bearer")]
+    [Authorize("Bearer")]
     public class CustomerSupplierController : Controller
     {
         public ICustomerSupplierService _customerSupplierService;
+        private readonly IValidator<CustomerSupplierRequest> _validator;
         private readonly IMapper _mapper;
 
-        public CustomerSupplierController(ICustomerSupplierService customerSupplierService, IMapper mapper)
+        public CustomerSupplierController(ICustomerSupplierService customerSupplierService, IMapper mapper, IValidator<CustomerSupplierRequest> validator)
         {
             _customerSupplierService = customerSupplierService ?? throw new ArgumentNullException(nameof(customerSupplierService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _validator = validator ?? throw new ArgumentNullException(nameof(validator));
         }
 
         [HttpGet]
@@ -47,8 +50,7 @@ namespace SNSYS.Challenger.Api.Controllers
         public async Task<IActionResult> Post([FromBody] CustomerSupplierRequest customerSupplierRequest)
         {
 
-            var validator = new CustomerSupplierValidator();
-            var validationResult = validator.Validate(customerSupplierRequest);
+            var validationResult = await _validator.ValidateAsync(customerSupplierRequest);
 
             if (!validationResult.IsValid)
             {
@@ -68,6 +70,15 @@ namespace SNSYS.Challenger.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Put(CustomerSupplierRequest customerSupplierRequest)
         {
+
+            var validationResult = await _validator.ValidateAsync(customerSupplierRequest);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
+
+
             var customerSupplierValidate = await _customerSupplierService.GetByIdAsync(customerSupplierRequest.Id.Value);
 
             if (customerSupplierValidate == null)
