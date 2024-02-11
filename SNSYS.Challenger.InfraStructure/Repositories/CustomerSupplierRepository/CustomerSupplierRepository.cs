@@ -1,31 +1,32 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SNSYS.Challenger.Domain.Entities;
 using SNSYS.Challenger.Domain.Filter;
-using SNSYS.Challenger.Domain.Repositories.CustomerSupplierRepository;
 using SNSYS.Challenger.InfraStructure.Data.Context;
+using SNSYS.Challenger.InfraStructure.Interfaces.Repositories;
 
 namespace SNSYS.Challenger.InfraStructure.Repositories.CustomerSupplierRepository
 {
     public class CustomerSupplierRepository : ICustomerSupplierRepository
     {
-        private readonly ChallengerSNSYSDbContext _context;
 
-        protected DbSet<CustomerSupplier> Table => _context.CustomerSupplier;
-
-        public CustomerSupplierRepository(ChallengerSNSYSDbContext challengerSNSYSDbContext)
+        public CustomerSupplierRepository()
         {
-            _context = challengerSNSYSDbContext ?? throw new ArgumentNullException(nameof(challengerSNSYSDbContext));
-            _context.ChangeTracker.AutoDetectChangesEnabled = false;
-            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+
         }
 
 
-        public async Task CreateAsync(CustomerSupplier customerSupplier)
+        public async Task<int> CreateAsync(CustomerSupplier customerSupplier, ChallengerSNSYSDbContext dbContext)
         {
+            int ret = 0;
+
             try
             {
-                _context.CustomerSupplier.Add(customerSupplier);
-                await _context.SaveChangesAsync();
+                var entity = await dbContext.CustomerSupplier.AddAsync(customerSupplier);
+                await dbContext.SaveChangesAsync();
+
+                ret = entity.Entity.Id;
+
+
             }
             catch (Exception ex)
             {
@@ -33,32 +34,30 @@ namespace SNSYS.Challenger.InfraStructure.Repositories.CustomerSupplierRepositor
              
             }
             
+            return ret;
 
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id, ChallengerSNSYSDbContext dbContext)
         {
 
-            var customerSupplier = await _context.CustomerSupplier.FindAsync(id);
+            var customerSupplier = await dbContext.CustomerSupplier.FindAsync(id);
 
-            _context.CustomerSupplier.Remove(customerSupplier);
-            await _context.SaveChangesAsync();
+            dbContext.CustomerSupplier.Remove(customerSupplier);
+            await dbContext.SaveChangesAsync();
 
 
         }
 
-        public async Task<IEnumerable<CustomerSupplier>> GetAllAsync()
-        {
-            return await Table.OrderBy(o => o.Name).ToListAsync();
-        }
 
-        public async Task<IEnumerable<CustomerSupplierData>> GetAllAsync(FilterCustomerSupplier filterCustomerSupplier)
+        public async Task<IEnumerable<CustomerSupplierData>> GetAllAsync(FilterCustomerSupplier filterCustomerSupplier, 
+                                    ChallengerSNSYSDbContext dbContext)
         {
 
-            var query = from cs in _context.CustomerSupplier
-                        join csa in _context.CustomerSupplierAddress on cs.Id equals csa.CustomerSupplierId into csaGroup
+            var query = from cs in dbContext.CustomerSupplier
+                        join csa in dbContext.CustomerSupplierAddress on cs.Id equals csa.CustomerSupplierId into csaGroup
                         from csa in csaGroup.DefaultIfEmpty()
-                        join csc in _context.CustomerSupplierContact on cs.Id equals csc.CustomerSupplierId into cscGroup
+                        join csc in dbContext.CustomerSupplierContact on cs.Id equals csc.CustomerSupplierId into cscGroup
                         from csc in cscGroup.DefaultIfEmpty()
                         select new CustomerSupplierData()
                         {
@@ -124,19 +123,19 @@ namespace SNSYS.Challenger.InfraStructure.Repositories.CustomerSupplierRepositor
             return await query.ToListAsync();
         }
 
-        public async Task<CustomerSupplier> GetByIdAsync(int id)
+        public async Task<CustomerSupplier> GetByIdAsync(int id, ChallengerSNSYSDbContext dbContext)
         {
-            return await Table.FindAsync(id);
+            return await dbContext.CustomerSupplier.FindAsync(id);
         }
 
-        public async Task UpdateAsync(CustomerSupplier customerSupplier)
+        public async Task UpdateAsync(CustomerSupplier customerSupplier, ChallengerSNSYSDbContext dbContext)
         {
             try
             {
 
-                _context.CustomerSupplier.Update(customerSupplier);
+                dbContext.CustomerSupplier.Update(customerSupplier);
 
-                await _context.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -145,5 +144,6 @@ namespace SNSYS.Challenger.InfraStructure.Repositories.CustomerSupplierRepositor
             }
 
         }
+
     }
 }

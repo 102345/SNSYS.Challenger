@@ -3,6 +3,9 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SNSYS.Challenger.Api.Contracts;
+using SNSYS.Challenger.Application.Contracts;
+using SNSYS.Challenger.Application.Services;
+using SNSYS.Challenger.Application.Services.Interfaces;
 using SNSYS.Challenger.Domain.Entities;
 using SNSYS.Challenger.Domain.Filter;
 using SNSYS.Challenger.Domain.Services.Interfaces;
@@ -11,18 +14,20 @@ namespace SNSYS.Challenger.Api.Controllers
 {
     [ApiController]
     [Route("snsys/api/customersupplier")]
-    [Authorize("Bearer")]
+    //[Authorize("Bearer")]
     public class CustomerSupplierController : Controller
     {
-        public ICustomerSupplierService _customerSupplierService;
+ 
+        public ICustomerSupplierTransactionService _customerSupplierTransactionService;
         private readonly IValidator<CustomerSupplierRequest> _validator;
         private readonly IMapper _mapper;
 
-        public CustomerSupplierController(ICustomerSupplierService customerSupplierService, IMapper mapper, IValidator<CustomerSupplierRequest> validator)
+        public CustomerSupplierController(IMapper mapper, 
+            IValidator<CustomerSupplierRequest> validator, ICustomerSupplierTransactionService customerSupplierTransactionService)
         {
-            _customerSupplierService = customerSupplierService ?? throw new ArgumentNullException(nameof(customerSupplierService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _validator = validator ?? throw new ArgumentNullException(nameof(validator));
+            _customerSupplierTransactionService = customerSupplierTransactionService ?? throw new ArgumentNullException(nameof(customerSupplierTransactionService));
         }
 
         [HttpGet]
@@ -31,7 +36,7 @@ namespace SNSYS.Challenger.Api.Controllers
             
             var filterCustomerSupplierMap = _mapper.Map<FilterCustomerSupplierRequest,FilterCustomerSupplier>(filterCustomerSupplierRequest);
 
-            var customerSupplierList = await _customerSupplierService.GetAllAsync(filterCustomerSupplierMap);
+            var customerSupplierList = await _customerSupplierTransactionService.GetAllAsync(filterCustomerSupplierMap);
 
             if (customerSupplierList != null)
             {
@@ -59,9 +64,9 @@ namespace SNSYS.Challenger.Api.Controllers
 
 
 
-            var customerSupplier = _mapper.Map<CustomerSupplierRequest, CustomerSupplier>(customerSupplierRequest);
+            var customerSupplierModel = _mapper.Map<CustomerSupplierRequest, CustomerSupplierModel>(customerSupplierRequest);
 
-            var ret = _customerSupplierService.CreateAsync(customerSupplier);
+            await _customerSupplierTransactionService.CreateAsync(customerSupplierModel);
 
             return NoContent();
 
@@ -79,16 +84,16 @@ namespace SNSYS.Challenger.Api.Controllers
             }
 
 
-            var customerSupplierValidate = await _customerSupplierService.GetByIdAsync(customerSupplierRequest.Id.Value);
+            var customerSupplierValidate = await _customerSupplierTransactionService.GetByIdAsync(customerSupplierRequest.Id.Value);
 
             if (customerSupplierValidate == null)
             {
                 return NotFound();
             }
 
-            var customerSupplier = _mapper.Map<CustomerSupplierRequest, CustomerSupplier>(customerSupplierRequest);
+            var customerSupplierModel = _mapper.Map<CustomerSupplierRequest, CustomerSupplierModel>(customerSupplierRequest);
 
-            await _customerSupplierService.UpdateAsync(customerSupplier);
+            await _customerSupplierTransactionService.UpdateAsync(customerSupplierModel);
 
             return NoContent();
         }
@@ -96,14 +101,14 @@ namespace SNSYS.Challenger.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var customerSupplier = await _customerSupplierService.GetByIdAsync(id);
+            var customerSupplier = await _customerSupplierTransactionService.GetByIdAsync(id);
 
             if (customerSupplier == null)
             {
                 return NotFound();
             }
 
-            await _customerSupplierService.DeleteAsync(id);
+            await _customerSupplierTransactionService.DeleteAsync(id);
 
             return NoContent();
         }

@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SNSYS.Challenger.InfraStructure\SNSYS.Challenger.InfraStructure.csproj" />
+    <ProjectReference Include="..\SNSYS.Challenger.Model\SNSYS.Challenger.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

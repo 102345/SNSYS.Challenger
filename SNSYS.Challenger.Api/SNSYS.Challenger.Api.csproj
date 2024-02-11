@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SNSYS.Challenger.Application\SNSYS.Challenger.Application.csproj" />
     <ProjectReference Include="..\SNSYS.Challenger.InfraStructure\SNSYS.Challenger.InfraStructure.csproj" />
     <ProjectReference Include="..\SNSYS.Challenger.Model\SNSYS.Challenger.Domain.csproj" />
   </ItemGroup>

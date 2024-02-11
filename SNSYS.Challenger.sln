@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{9A122812-42D
 		Create_Tables_SNSYS.sql = Create_Tables_SNSYS.sql
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SNSYS.Challenger.Application", "SNSYS.Challenger.Application\SNSYS.Challenger.Application.csproj", "{624F19FA-FFD9-431D-99D6-5D3184EA5B91}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{4F06EF12-FAFD-40DB-A7BE-6BCDF16757C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F06EF12-FAFD-40DB-A7BE-6BCDF16757C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F06EF12-FAFD-40DB-A7BE-6BCDF16757C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{624F19FA-FFD9-431D-99D6-5D3184EA5B91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{624F19FA-FFD9-431D-99D6-5D3184EA5B91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{624F19FA-FFD9-431D-99D6-5D3184EA5B91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{624F19FA-FFD9-431D-99D6-5D3184EA5B91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

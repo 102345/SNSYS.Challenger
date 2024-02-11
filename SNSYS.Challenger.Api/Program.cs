@@ -4,20 +4,19 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using SNSYS.Challenger.Domain.Repositories.CustomerSupplierRepository;
 using SNSYS.Challenger.Domain.Repositories.User;
-using SNSYS.Challenger.Domain.Services.CustomerSupplierService;
 using SNSYS.Challenger.Domain.Services.Interfaces;
 using SNSYS.Challenger.Domain.Services.User;
 using SNSYS.Challenger.InfraStructure.Authorization;
 using SNSYS.Challenger.InfraStructure.Data.Context;
 using SNSYS.Challenger.InfraStructure.Interfaces;
-using SNSYS.Challenger.InfraStructure.Repositories.CustomerSupplierRepository;
 using SNSYS.Challenger.InfraStructure.Repositories.User;
 using System.Text;
 using System.Globalization;
 using SNSYS.Challenger.Api.Validators;
 using Microsoft.OpenApi.Models;
+using SNSYS.Challenger.Application.Services.Interfaces;
+using SNSYS.Challenger.Application.Services;
 
 namespace SNSYS.Challenger.Api
 {
@@ -40,7 +39,6 @@ namespace SNSYS.Challenger.Api
 
             builder.Services.AddEndpointsApiExplorer();
 
-            //builder.Services.AddSwaggerGen();
 
             builder.Services.AddSwaggerGen(c =>
             {
@@ -125,8 +123,6 @@ namespace SNSYS.Challenger.Api
             app.UseAuthentication();
             app.UseAuthorization();
 
-            //app.UseRouting();
-
             app.MapControllers();
 
             app.Run();
@@ -135,9 +131,9 @@ namespace SNSYS.Challenger.Api
         private static void ConfigServicesDependencyInjection(WebApplicationBuilder builder)
         {
             builder.Services.AddScoped<IAuthorizationJWT, AuthorizationJWT>();
+            //builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IUsersRepository, UsersRepository>();
-            builder.Services.AddScoped<ICustomerSupplierRepository, CustomerSupplierRepository>();
-            builder.Services.AddScoped<ICustomerSupplierService, CustomerSupplierService>();
+            builder.Services.AddScoped<ICustomerSupplierTransactionService, CustomerSupplierTransactionService>();
             builder.Services.AddScoped<IUsersService, UsersService>();
 
         }

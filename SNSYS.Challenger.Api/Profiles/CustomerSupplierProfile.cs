@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using SNSYS.Challenger.Api.Contracts;
-using SNSYS.Challenger.Domain.Entities;
+using SNSYS.Challenger.Application.Contracts;
 
 namespace SNSYS.Challenger.Api.Profiles
 {
@@ -8,8 +8,8 @@ namespace SNSYS.Challenger.Api.Profiles
     {
         public CustomerSupplierProfile()
         {
-            CreateMap<CustomerSupplier, CustomerSupplierRequest>();
-            CreateMap<CustomerSupplierRequest, CustomerSupplier>();
+            CreateMap<CustomerSupplierModel, CustomerSupplierRequest>();
+            CreateMap<CustomerSupplierRequest, CustomerSupplierModel>();
         }
     }
 }
