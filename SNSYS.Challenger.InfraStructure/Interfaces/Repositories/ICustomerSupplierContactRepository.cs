@@ -9,5 +9,6 @@ namespace SNSYS.Challenger.InfraStructure.Interfaces.Repositories
         Task CreateAsync(CustomerSupplierContact customerSupplierContact, ChallengerSNSYSDbContext dbContext);
         Task UpdateAsync(CustomerSupplierContact customerSupplierContact, ChallengerSNSYSDbContext dbContext);
         Task DeleteAsync(int id, ChallengerSNSYSDbContext dbContext);
+        Task DeletePerCustomerSupplier(int customerSupplierId, ChallengerSNSYSDbContext dbContext);
     }
 }

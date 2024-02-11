@@ -23,65 +23,6 @@ namespace SNSYS.Challenger.Application.Services
         }
 
 
-        //public async Task CreateAsync1(CustomerSupplierModel customerSupplierModel)
-        //{
-        //    //var unitOfWork = new UnitOfWork(_context);
-        //    //using (var unitOfWork = new UnitOfWork(_context))
-        //    var ChallengerDb = "Host=localhost;Port=5432;Pooling=true;Database=ChallengerSNYS;User Id=postgres;Password=scnfm;";
-
-        //    var options = new DbContextOptionsBuilder<ChallengerSNSYSDbContext>()
-        //                                            .UseNpgsql(ChallengerDb)
-        //                                            .Options;
-
-        //    using var context1 = new ChallengerSNSYSDbContext(options);
-
-        //    var transaction = await context1.Database.BeginTransactionAsync();
-        //    try
-        //    {
-        //        //await unitOfWork.BeginTransaction();
-
-
-
-        //        var customerSupplier = new CustomerSupplier()
-        //        {
-        //            Name = customerSupplierModel.Name,
-        //            DocumentNumber = customerSupplierModel.DocumentNumber,
-        //            Type = customerSupplierModel.Type,
-        //        };
-
-        //        //var customerSupplierId = await unitOfWork.CustomerSuppliers.CreateAsync(customerSupplier,_context);
-
-        //        var customerSupplierId = await context1.CustomerSupplier.AddAsync(customerSupplier);
-
-        //        await context1.SaveChangesAsync();
-
-
-
-        //        await transaction.CommitAsync();
-
-        //        //foreach (var addressItem in customerSupplierOrchestrator.Addresses)
-        //        //{
-        //        //    addressItem.CustomerSupplierId = customerSupplier.Id;
-        //        //    await unitOfWork.CustomerSupplierAddresses.CreateAsync(addressItem, _context);
-        //        //}
-
-        //        //foreach (var contactItem in customerSupplierOrchestrator.Contacts)
-        //        //{
-        //        //    contactItem.CustomerSupplierId = customerSupplier.Id;
-        //        //    await unitOfWork.CustomerSupplierContacts.CreateAsync(contactItem, _context);
-        //        //}
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-             
-        //        await transaction.RollbackAsync();
-        //    }
-
-
-        //}
-
-
         public async Task CreateAsync(CustomerSupplierModel customerSupplierModel)
         {
            
@@ -125,14 +66,32 @@ namespace SNSYS.Challenger.Application.Services
 
         }
 
-        public Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _unitOfWork.BeginTransaction();
+
+                await _unitOfWork.CustomerSupplierContacts.DeletePerCustomerSupplier(id, _context);
+
+                await _unitOfWork.CustomerSupplierAddresses.DeletePerCustomerSupplier(id, _context);
+
+                await _unitOfWork.CustomerSuppliers.DeleteAsync(id, _context);
+
+                _unitOfWork.Commit();
+
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message;
+                _unitOfWork.RollBack();
+
+            }
         }
 
-        public Task<IEnumerable<CustomerSupplierData>> GetAllAsync(FilterCustomerSupplier filterCustomerSupplier)
+        public async Task<IEnumerable<CustomerSupplierData>> GetAllAsync(FilterCustomerSupplier filterCustomerSupplier)
         {
-            throw new NotImplementedException();
+            return await _unitOfWork.CustomerSuppliers.GetAllAsync(filterCustomerSupplier, _context);
         }
 
         public async Task<CustomerSupplier> GetByIdAsync(int id)

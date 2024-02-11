@@ -26,6 +26,15 @@ namespace SNSYS.Challenger.InfraStructure.Repositories.CustomerSupplierAddressRe
 
         }
 
+        public async Task DeletePerCustomerSupplier(int customerSupplierId, ChallengerSNSYSDbContext dbContext)
+        {   
+            var customerSupplierAddresses = dbContext.CustomerSupplierAddress.Where(x => x.CustomerSupplierId == customerSupplierId).ToList();
+
+            dbContext.CustomerSupplierAddress.RemoveRange(customerSupplierAddresses);
+     
+            await dbContext.SaveChangesAsync();
+        }
+
         public async Task<CustomerSupplierAddress> GetByIdAsync(int id, ChallengerSNSYSDbContext dbContext)
         {
             return await dbContext.CustomerSupplierAddress.FindAsync(id);

@@ -4,11 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SNSYS.Challenger.Api.Contracts;
 using SNSYS.Challenger.Application.Contracts;
-using SNSYS.Challenger.Application.Services;
 using SNSYS.Challenger.Application.Services.Interfaces;
 using SNSYS.Challenger.Domain.Entities;
 using SNSYS.Challenger.Domain.Filter;
-using SNSYS.Challenger.Domain.Services.Interfaces;
+
 
 namespace SNSYS.Challenger.Api.Controllers
 {
