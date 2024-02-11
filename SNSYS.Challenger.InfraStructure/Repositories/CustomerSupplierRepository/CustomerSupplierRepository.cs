@@ -65,14 +65,19 @@ namespace SNSYS.Challenger.InfraStructure.Repositories.CustomerSupplierRepositor
                             Name = cs.Name,
                             Type = cs.Type,
                             DocumentNumber = cs.DocumentNumber,
+                            AddressId = csa.Id == 0 ? 0 : csa.Id,
                             Address = csa.Address == null ? string.Empty : csa.Address,
                             City = csa.City == null ? string.Empty : csa.City,
                             ZIP = csa.ZIP == null ? string.Empty : csa.ZIP,
+                            SupplierCustomerIdAddress = csa.CustomerSupplierId == null ? 0 : csa.CustomerSupplierId,
+                            ContactId = csc.Id == 0 ? 0 : csc.Id,
                             Country = csa.Country == null ? string.Empty : csa.Country,
                             ContactName = csc.Name == null ? string.Empty : csc.Name,
                             ContactEmail = csc.Email == null ? string.Empty : csc.Email,
                             ContactPhoneNumber = csc.PhoneNumber == null ? 0 : csc.PhoneNumber,
-                            ContactPosition = csc.Position == null ? string.Empty : csc.Position
+                            ContactPosition = csc.Position == null ? string.Empty : csc.Position,
+                            ContactDepartment = csc.Department == null ? string.Empty : csc.Department,
+                            SupplierCustomerIdContact = csc.CustomerSupplierId == null ? 0 : csc.CustomerSupplierId,
                         };
 
 

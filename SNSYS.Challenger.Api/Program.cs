@@ -42,7 +42,7 @@ namespace SNSYS.Challenger.Api
 
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "APIContagem", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ChallengerAPI", Version = "v1" });
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -108,6 +108,7 @@ namespace SNSYS.Challenger.Api
             builder.Services.AddFluentValidation(conf =>
             {
                 conf.RegisterValidatorsFromAssemblyContaining(typeof(CustomerSupplierValidator));
+                conf.RegisterValidatorsFromAssemblyContaining(typeof(FilterCustomerSupplierRequestValidator));
                 conf.AutomaticValidationEnabled = false;
                 conf.ValidatorOptions.LanguageManager.Culture = new CultureInfo("en-US");
             });

@@ -13,26 +13,35 @@ namespace SNSYS.Challenger.Api.Controllers
 {
     [ApiController]
     [Route("snsys/api/customersupplier")]
-    //[Authorize("Bearer")]
+    [Authorize("Bearer")]
     public class CustomerSupplierController : Controller
     {
  
         public ICustomerSupplierTransactionService _customerSupplierTransactionService;
         private readonly IValidator<CustomerSupplierRequest> _validator;
+        private readonly IValidator<FilterCustomerSupplierRequest> _validatorFilter;
         private readonly IMapper _mapper;
 
-        public CustomerSupplierController(IMapper mapper, 
-            IValidator<CustomerSupplierRequest> validator, ICustomerSupplierTransactionService customerSupplierTransactionService)
+        public CustomerSupplierController(IMapper mapper,
+            IValidator<CustomerSupplierRequest> validator, ICustomerSupplierTransactionService customerSupplierTransactionService, 
+            IValidator<FilterCustomerSupplierRequest> validatorFilter)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _validator = validator ?? throw new ArgumentNullException(nameof(validator));
             _customerSupplierTransactionService = customerSupplierTransactionService ?? throw new ArgumentNullException(nameof(customerSupplierTransactionService));
+            _validatorFilter = validatorFilter ?? throw new ArgumentNullException(nameof(validatorFilter)); ;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] FilterCustomerSupplierRequest filterCustomerSupplierRequest)
         {
-            
+            var validationResult = await _validatorFilter.ValidateAsync(filterCustomerSupplierRequest);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
+
             var filterCustomerSupplierMap = _mapper.Map<FilterCustomerSupplierRequest,FilterCustomerSupplier>(filterCustomerSupplierRequest);
 
             var customerSupplierList = await _customerSupplierTransactionService.GetAllAsync(filterCustomerSupplierMap);
